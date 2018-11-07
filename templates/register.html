@@ -6,12 +6,13 @@
 	</head>
 	<body>
 		<div class="container">
-			<h1>test login page</h1>
+			<h1>test register page</h1>
 			<br>
 			<form action="" method="post">
 				<input type="text" placeholder="Username" name="username" value="">
+				<input type="text" placeholder="E-mail" name="email" value="">
 				<input type="password" placeholder="Password" name="password" value="">
-				<input class="btn btn-default" type="submit" value="Login">
+				<input class="btn btn-default" type="submit" value="Register">
 			</form>
 			{% if error %}
 				<p class="error"><strong>Error:</strong> {{ error }}</p>
