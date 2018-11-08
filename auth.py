@@ -6,7 +6,7 @@ from .db import get_db
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
 
-@bp.route("/register/", methods=("GET", "POST"))
+@bp.route("/register", methods=("GET", "POST"))
 def register():
 
     # If the user is submitting data, I.E. their registration form, then...
@@ -24,7 +24,7 @@ def register():
             error = "Password is required."
 
         # Look up a user with the same name as the form. If ANYTHING returns, we error out.
-        elif db.execute("SELECT id FROM users WHERE username = ?", username,).fetchone() is not None:
+        elif db.execute("SELECT id FROM users WHERE username = ?", (username,)).fetchone() is not None:
             error = "User {} is already registered.".format(username)
 
         # If we encounter no errors along the way, process the request:
@@ -39,7 +39,7 @@ def register():
     return render_template("register.html")
 
 
-@bp.route("/login/", methods=("GET", "POST"))
+@bp.route("/login", methods=("GET", "POST"))
 def login():
     if request.method == "POST":
         username = request.form["username"]
@@ -66,7 +66,7 @@ def login():
     return render_template("login.html")
 
 
-@bp.route("/logout/")
+@bp.route("/logout")
 def logout():
     session.clear()
     return redirect(url_for("index"))
