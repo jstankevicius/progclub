@@ -30,10 +30,12 @@ def create_app(test_config=None):
     from . import auth
     from . import db
     from . import index
+    from . import lab
     
     db.init_app(app)
     app.register_blueprint(auth.bp)
     app.register_blueprint(index.bp)
+    app.register_blueprint(lab.bp)
     app.add_url_rule("/", endpoint="index")
 
     return app

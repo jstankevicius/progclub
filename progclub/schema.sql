@@ -7,6 +7,7 @@ CREATE TABLE users (
     password TEXT NOT NULL
 );
 
+
 CREATE TABLE labs (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL,

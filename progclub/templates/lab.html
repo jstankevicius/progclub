@@ -1,0 +1,63 @@
+<html>
+	<head>
+		<title>test lab lol</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link href="static/bootstrap.min.css" rel="stylesheet" media="screen">
+		<style>
+
+		body {
+			font-family: monospace;
+		}
+		.wrapper {
+			max-width: 850;
+			margin: 0 auto;
+		}
+		.sidebar {
+			width: 300px;
+			float: right;
+			margin-top: 100px;
+		}
+		.labtext {
+			width:500px;
+			float:left;
+		}
+
+		</style>
+
+	</head>
+
+	<div class="navbar" align="right">
+		<a href="auth/login">Login</a>
+		<a href="auth/register">Register</a>
+
+	</div>
+
+	<div class="wrapper">
+
+		<div class="labtext">
+			{% block content %}
+			<h1>
+				{{ title }}
+			</h1>
+			<body>
+				{{ body }}
+			</body>
+			{% endblock %}
+		</div>
+
+		<div id="sidebar" class="sidebar">
+			<body>
+				Completed:
+			</body>
+
+			<div id="uploaddiv" class="uploaddiv">
+				<form method=post enctype="multipart/form-data">
+					<input type="file" name="fileupload"/>
+					<input type="submit" value="upload">
+				</form>
+
+			</div>
+		</div>	
+
+	</div>
+</html>
