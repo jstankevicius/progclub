@@ -25,13 +25,9 @@ def get_db():
             detect_types=sqlite3.PARSE_DECLTYPES
         )
 
-        # Thsi allows us to access the SQLite database like we would a dictionary, meaning
-        # that we can access columns by name. Makes things very easy - if we want to get
-        # a list of all users, we'd say something like db["users"].
         g.db.row_factory = make_dicts
 
     return g.db
-
 
 
 def query_db(query, args=(), one=False):
