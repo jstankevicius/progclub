@@ -1,0 +1,6 @@
+body 					{ font-family: 'Georgia', serif; font-size: 17px; color: #000; }
+a 						{ color: #004B6B; }
+h1 						{ font-family: "adobe-garamond-pro", serif; font-size: 50px; }
+.navbar					{ padding-top: 30px; }
+.navlink 				{ color: #004B6B; }
+.navlink:hover 			{ color: #6D4100; }

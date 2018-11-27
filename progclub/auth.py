@@ -25,6 +25,7 @@ def register():
 
         # Look up a user with the same name as the form. If ANYTHING returns, we error out.
         elif db.execute("SELECT id FROM users WHERE username = ?", (username,)).fetchone() is not None:
+            print("User is already registered.")
             error = "User {} is already registered.".format(username)
 
         # If we encounter no errors along the way, process the request:
@@ -52,13 +53,18 @@ def login():
         user = db.execute("SELECT * FROM users WHERE username = ?", (username,)).fetchone()
 
         if user is None:
-            error = "Incorrect username."
+            error = "Incorrect username"
+            print("Incorrect username.")
         elif not check_password_hash(user["password"], password):
-            error = "Incorrect password."
+            error = "Incorrect password"
+            print("Incorrect password.")
 
         if error is None:
             session.clear()
             session["user_id"] = user["id"]
+            session["username"] = user["username"]
+
+            print("Successful login")
             return redirect(url_for("index"))
 
         flash(error)
