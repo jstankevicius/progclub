@@ -39,10 +39,7 @@ def lab(id):
                 file.save(filename)
 
                 user_output = check_output("python " + filename, shell=True).decode("utf-8")
-
                 print(user_output)
-
-                # compile code
 
                 # return result somehow
                 flash("Yay! Looks like your output was correct!")

@@ -4,7 +4,8 @@ DROP TABLE IF EXISTS labs;
 CREATE TABLE users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT UNIQUE NOT NULL,
-    password TEXT NOT NULL
+    password TEXT NOT NULL,
+    points INTEGER
 );
 
 
@@ -13,4 +14,10 @@ CREATE TABLE labs (
     title TEXT NOT NULL,
     body TEXT NOT NULL,
     output TEXT NOT NULL
+);
+
+CREATE TABLE submissions (
+    author_id INTEGER NOT NULL,
+    lab_id INTEGER NOT NULL,
+    lang TEXT NOT NULL
 );

@@ -42,13 +42,13 @@ def register():
 
 @bp.route("/login", methods=("GET", "POST"))
 def login():
+    error = None
+
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
 
         db = get_db()
-
-        error = None
 
         user = db.execute("SELECT * FROM users WHERE username = ?", (username,)).fetchone()
 
@@ -69,7 +69,7 @@ def login():
 
         flash(error)
 
-    return render_template("login.html")
+    return render_template("login.html", error=error)
 
 
 @bp.route("/logout")

@@ -1,0 +1,68 @@
+<html>
+	<head>
+		<title>login</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link href="static/bootstrap.min.css" rel="stylesheet" media="screen">
+		<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static', filename='style.css') }}">
+		<link rel="stylesheet" href="https://use.typekit.net/ixc8esf.css">
+
+		<style>
+			.wrapper {
+				max-width: 520;
+				margin: 0 auto;
+				padding-top: 50px;
+			}
+
+			.authinput {
+				border-radius: 4px;
+				padding: 12px;
+				width: 100%;
+				display: inline-block;
+			}
+
+			.container {
+				padding-bottom: 10px;
+			}
+
+
+			.submitbutton {
+				background-color: #555555;
+				padding: 12px 28px;
+				border: none;
+				cursor: pointer;
+				border-radius: 4px;
+				color: white;
+				font-family: 'Georgia', serif;
+				font-size: 16px;
+			}
+		</style>
+		
+	</head>
+
+	<div class="wrapper" id="wrapper">
+		<h1>Admin</h1>
+		<form method="post">
+			<div class="container">
+				<input type="text", class="authinput", placeholder="Name of the lab">
+			</div>
+
+			<div class="container">
+				<textarea id="body" name="body" class="authinput" placeholder="Body" style="height:200px; width:100%"></textarea>
+			</div>
+
+			<div class="container">
+				<input type="text", class="authinput", placeholder="The correct output">
+			</div>
+
+			<input class="submitbutton" type="submit" value="Create lab">
+		</form>
+
+		<form method="post">
+			<div class="container">
+				<input type="text", class="authinput", placeholder="Name of the lab", style="font-family: monospace;">
+			</div>
+		</form>
+	</div>
+
+
+</html>

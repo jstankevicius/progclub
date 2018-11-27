@@ -31,11 +31,13 @@ def create_app(test_config=None):
     from . import db
     from . import index
     from . import lab
+    from . import admin
     
     db.init_app(app)
     app.register_blueprint(auth.bp)
     app.register_blueprint(index.bp)
     app.register_blueprint(lab.bp)
+    app.register_blueprint(admin.bp)
     app.add_url_rule("/", endpoint="index")
 
     return app
