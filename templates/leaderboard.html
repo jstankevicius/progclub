@@ -1,0 +1,73 @@
+<html>
+	<head>
+		<link rel="stylesheet" href="https://use.typekit.net/ixc8esf.css">
+		<title>NCHS Programming Club</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link href="static/bootstrap.min.css" rel="stylesheet" media="screen">
+		<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static', filename='style.css') }}">
+		<style>
+
+		body {
+			font-family: 'Georgia', serif;
+		}
+
+		.wrapper {
+			max-width: 520;
+			margin: 0 auto;
+		}
+
+		.row {
+			margin-top: 3px;
+			width: 520;
+			overflow: hidden;
+		}
+
+		.labtext {
+			width: 300;
+			float: left;
+		}
+
+		.solnumber {
+			width: 200;
+			float:right;
+		}
+
+		</style>
+
+	</head>
+
+	{% block content %}
+		<div class="wrapper" id="wrapper">
+
+			{{ navbar|safe }}
+
+			<h1>Leaderboard</h1>
+
+			<div class="row" id="row" align="center">
+				<div class="labtext" align="left">
+					<b>Name</b>
+				</div>
+
+				<div class="solnumber" align="right">
+					<b>Score</b>
+				</div>
+			</div>
+
+			<div class="row-wrapper">
+				{% for user in users %}
+					<div class="row" id="row" align="center">
+						<div class="labtext" align="left">
+							{{ loop.index }}. {{ user["username"] }}
+						</div>
+
+						<div class="solnumber" align="right">
+							{{ user["points"] }}
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+
+		</div>
+	{% endblock %}
+	
+</html>

@@ -1,0 +1,11 @@
+<html>
+	<div class="navbar" align="right">
+	    {{ username }} [{{ points }}]
+	    <small>//</small>
+	    <a href="{{ url_for('index') }}" class="navlink"><i>index</i></a>
+	    <small>//</small>
+	    <a href="{{ url_for('leaderboard.leaderboard') }}" class="navlink"><i>leaderboard</i></a>
+	    <small>//</small>
+	    <a href="{{ url_for('auth.logout') }}" class="navlink"><i>logout</i></a>
+	</div>
+</html>

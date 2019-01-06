@@ -1,0 +1,129 @@
+<html>
+	<head>
+		<title>{{ title }}</title>
+		<link rel="stylesheet" href="https://use.typekit.net/ixc8esf.css">
+		<link href="static/bootstrap.min.css" rel="stylesheet" media="screen">
+		<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static', filename='style.css') }}">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+		<style>
+
+		body {
+			font-family: "Georgia";
+		}
+
+		.navbar {
+			margin: 0 auto;
+			margin-top: -15px;
+			width: 520px;
+		}
+
+		.wrapper {
+			max-width: 900;
+			margin: 0 auto;
+		}
+
+		.labtext {
+			width:500px;
+			float: left;
+			display: inline-block;
+		}
+
+		.leaderboard {
+			display: inline-block;
+			width: 360px;
+			margin-top: 60px;
+			margin-left: 30px;
+		}
+
+		.output {
+			border-radius: 4px;
+			padding: 12px;
+			width: 300px;
+			font-family: monospace;
+			font-size: 16px;
+			display: inline-block;
+		}
+
+		.uploadbutton {
+			background-color: #555555;
+			padding: 12px 28px;
+			margin-left: 10px;
+			border: none;
+			cursor: pointer;
+			border-radius: 4px;
+			color: white;
+			font-family: 'Georgia', serif;
+			font-size: 16px;
+			display: inline-block;
+		}
+
+		.solution {
+			font-size: 14px;
+		}
+
+		.created {
+			margin-top: -30px;
+			margin-bottom: 10px;
+		}
+		.uploaddiv {
+			margin-top: 20px;
+		}
+
+		</style>
+
+	</head>
+
+	<div class="navbar">
+		{{ navbar|safe }}
+	</div>
+
+
+	<div class="wrapper">
+
+		<div class="labtext">
+			{% block content %}
+			<h1>
+				{{ title }}
+			</h1>
+
+			<div class="created"> 
+				<i>created {{ date }}</i>
+			</div>
+
+			<body>
+				{{ body }}
+			</body>
+			{% endblock %}
+
+			<div id="uploaddiv" class="uploaddiv">
+				<form method=post enctype="multipart/form-data">
+
+					<div class="container">
+						<input type="text", class="output", name="output" placeholder="Output">
+						<input type="submit" value="Submit" class="uploadbutton">
+					</div>
+
+				</form>
+			</div>
+
+			{% for message in get_flashed_messages() %}
+			<div class="alert">
+				{{ message }}
+			</div>
+			{% endfor %}
+		</div>
+
+		<div class="leaderboard">
+			Solved by:
+
+			{% for solution in solutions %}
+			<div><i class="solution">{{ solution["author_username"] }} on {{ solution["submitted"] }}</i></div>
+			{% endfor %}
+
+		</div>
+
+
+	</div>
+</html>
