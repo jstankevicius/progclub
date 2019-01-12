@@ -1,5 +1,9 @@
-runtime: python37
-entrypoint: gunicorn "main:run()" #
+runtime: python
+entrypoint: gunicorn "progclub:create_app()" #
+env: flex
+
+runtime_config:
+  python_version: 3
 
 handlers:
   # This configures Google App Engine to serve the files in the app's static

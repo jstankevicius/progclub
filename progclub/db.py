@@ -1,7 +1,9 @@
 import sqlite3, click, os
 from flask import current_app, g
 from flask.cli import with_appcontext
+#from google.cloud import datastore
 
+#datastore_client = datastore.Client()
 
 # Weirdest and most nondescript module name EVER:
 # g is the "global" (if that's what it stands for) cache in which all the
