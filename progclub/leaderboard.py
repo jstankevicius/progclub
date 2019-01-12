@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, session
-from db import get_db, query_db
+from .db import query_db
 
 bp = Blueprint("leaderboard", __name__)
 

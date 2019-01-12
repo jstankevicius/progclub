@@ -1,5 +1,5 @@
-from flask import Blueprint, flash, g, redirect, render_template, request, session, url_for
-from db import get_db, query_db
+from flask import Blueprint, flash, redirect, render_template, request, session, url_for
+from .db import get_db, query_db
 import datetime
 
 bp = Blueprint("labs", __name__, url_prefix="/labs")

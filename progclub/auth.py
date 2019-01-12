@@ -1,7 +1,6 @@
-import functools
-from flask import Blueprint, flash, g, redirect, render_template, request, session, url_for
+from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
-from db import get_db
+from .db import get_db
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -23,12 +22,10 @@ def register():
             error = "Password is required."
 
         if len(username) > 20:
-            print("Username cannot be more than 20 characters.")
             error = "Username cannot be more than 20 characters."
 
         # Look up a user with the same name as the form. If ANYTHING returns, we error out.
         elif db.execute("SELECT id FROM users WHERE username = ?", (username,)).fetchone() is not None:
-            print("User is already registered.")
             error = "User {} is already registered.".format(username)
 
         # If we encounter no errors along the way, process the request:

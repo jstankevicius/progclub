@@ -1,10 +1,7 @@
-from flask import Blueprint, flash, g, redirect, render_template, session
-from db import get_db, query_db
-import random
+from flask import Blueprint, render_template, session
+from .db import get_db, query_db
 
 bp = Blueprint("index", __name__)
-
-ALLOWED_EXTENSIONS = [".py"]
 
 
 @bp.route("/", methods=["GET"])

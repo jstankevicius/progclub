@@ -1,5 +1,5 @@
-from flask import Blueprint, flash, g, redirect, render_template, request, session, url_for
-from db import get_db, query_db
+from flask import Blueprint, redirect, render_template, request, session, url_for
+from .db import get_db
 import datetime
 
 
