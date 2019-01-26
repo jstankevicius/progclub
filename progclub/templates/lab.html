@@ -85,11 +85,11 @@
 		<div class="labtext">
 			{% block content %}
 			<h1>
-				{{ title }}
+				{{ name }}
 			</h1>
 
 			<div class="created"> 
-				<i>created {{ date }}</i>
+				<i>created {{ date.strftime("%Y-%m-%d, %I:%M%p") }} UTC</i>
 			</div>
 
 			<body>
@@ -118,8 +118,8 @@
 		<div class="leaderboard">
 			Solved by:
 
-			{% for solution in solutions %}
-			<div><i class="solution">{{ solution["author_username"] }} on {{ solution["submitted"] }}</i></div>
+			{% for solution in submissions %}
+			<div><i class="solution">{{ solution["author_name"] }} on {{ solution["submitted"].strftime("%Y-%m-%d, %I:%M%p") }} UTC</i></div>
 			{% endfor %}
 
 		</div>

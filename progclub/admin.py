@@ -1,6 +1,6 @@
 from flask import Blueprint, redirect, render_template, request, session, url_for
 from . import db
-import datetime
+from datetime import datetime, timezone
 
 
 bp = Blueprint("admin", __name__)
@@ -18,10 +18,11 @@ def admin_view():
         name = request.form["name"]
         body = request.form["body"]
         output = request.form["output"]
-
-        now = datetime.datetime.now()
-        db.entry("Lab", int(now.strftime("%y%m%d%I%M%S")),
-                 {"name": name, "body": body, "output": output, "created": now})
+        now = datetime.now(timezone.utc)
+        print(now)
+        key = int(now.strftime("%y%m%d%I%M%S"))
+        db.entry("Lab", key,
+                 {"name": name, "body": body, "output": output, "numsolutions": 0, "created": now, "id": key})
 
         return redirect(url_for("index"))
 
