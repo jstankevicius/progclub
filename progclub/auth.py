@@ -1,6 +1,6 @@
 from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
-from .db import get_db
+from . import db
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -11,8 +11,6 @@ def register():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-
-        db = get_db()
 
         error = None
 
@@ -25,17 +23,17 @@ def register():
             error = "Username cannot be more than 20 characters."
 
         # Look up a user with the same name as the form. If ANYTHING returns, we error out.
-        elif db.execute("SELECT id FROM users WHERE username = ?", (username,)).fetchone() is not None:
-            error = "User {} is already registered.".format(username)
+        # uhhh, to be implemented in GCP
 
         # If we encounter no errors along the way, process the request:
         if error is None:
-            db.execute("INSERT INTO users (username, password) VALUES (?, ?)",
-                       (username, generate_password_hash(password)))
-            db.commit()
-            return redirect(url_for("auth.login"))
+            db.entry("User", username,
+                     {"username": username,
+                      "password": generate_password_hash(password),
+                      "points": 0,
+                      "numsolutions": 0})
 
-        flash(error)
+            return redirect(url_for("auth.login"))
 
     return render_template("register.html")
 
@@ -47,10 +45,7 @@ def login():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-
-        db = get_db()
-
-        user = db.execute("SELECT * FROM users WHERE username = ?", (username,)).fetchone()
+        user = db.get_entry("User", username)
 
         if user is None:
             error = "Incorrect username"

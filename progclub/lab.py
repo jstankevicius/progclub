@@ -1,5 +1,5 @@
 from flask import Blueprint, flash, redirect, render_template, request, session, url_for
-from .db import get_db, query_db
+from . import db
 import datetime
 
 bp = Blueprint("labs", __name__, url_prefix="/labs")
@@ -11,7 +11,6 @@ def score(submitted, created):
     'HH:MM:SS, mm-dd-yy' format."""
 
     submitted = datetime.datetime.strptime(submitted, "%I:%M:%S%p, %m-%d-%y")
-    created = datetime.datetime.strptime(created, "%I:%M:%S%p, %m-%d-%y")
 
     delta = (submitted - created).total_seconds()
     base_score = 100
@@ -24,8 +23,8 @@ def labview(lab_id):
     """Lab view function responsible for handling submission requests."""
 
     # Retrieve lab and its corresponding list of solutions
-    lab = query_db("SELECT * FROM labs WHERE id = ?", (lab_id,), True)
-    solutions = query_db("SELECT * FROM submissions WHERE lab_id = ?", (lab["id"],))
+    lab = db.get_entry("Lab", lab_id)
+    submissions = db.get_entries("Submissions")
 
     # Ugly
     navbar = render_template("default_navbar.html")
@@ -48,7 +47,7 @@ def labview(lab_id):
             # Check if any solution in the lab's solution list has the user's ID attached to it.
             # TODO: can probably make this check much prettier
             already_submitted = False
-            for solution in solutions:
+            for solution in submissions:
                 if solution["author_id"] == session["user_id"]:
                     already_submitted = True
 
@@ -56,13 +55,9 @@ def labview(lab_id):
             if not already_submitted:
 
                 # Retrieve current datetime as a string.
-                now = datetime.datetime.now().strftime("%I:%M:%S%p, %m-%d-%y")
+                now = datetime.datetime.now()
                 created = lab["created"]
-
-                # User's guess:
                 output = request.form["output"]
-
-                # Actual answer:
                 correct_output = lab["output"]
 
                 if output == correct_output:
@@ -73,16 +68,13 @@ def labview(lab_id):
 
                     # add to their actual points (we do this in session so the user can see their own points increase)
                     session["points"] += points
+                    session["numsolutions"] += 1
+                    username = session["username"]
 
                     # Queries to update points, submissions for the lab, and the number of solutions by the user and for the lab.
-                    query_db("UPDATE users SET points = ? WHERE id = ?", (session["points"], session["user_id"]))
-                    query_db("INSERT INTO submissions (author_id, author_username, lab_id, submitted) VALUES(?, ?, ?, ?)",
-                             (session["user_id"], session["username"], lab["id"], now))
-
-                    query_db("UPDATE users SET numsolutions = ? WHERE id = ?", (session["numsolutions"] + 1, session["user_id"]))
-                    query_db("UPDATE labs SET numsolutions = ? WHERE id = ?", (lab["numsolutions"] + 1, lab["id"]))
-
-                    get_db().commit()
+                    db.update_entry("User", username, {"points": session["points"], "numsolutions": session["numsolutions"]})
+                    db.update_entry("Lab", lab_id, {"numsolutions": lab["numsolutions"] + 1})
+                    db.entry("Submission", username + str(lab_id), {"author_name": session, "submitted": now})
 
                 else:
                     flash("Incorrect output.")
@@ -94,5 +86,5 @@ def labview(lab_id):
                            body=lab["body"],
                            date=lab["created"],
                            navbar=navbar,
-                           solutions=solutions)
+                           solutions=submissions)
 

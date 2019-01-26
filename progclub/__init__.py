@@ -15,7 +15,7 @@ def create_app(test_config=None):
     if test_config is None:
         # If there is a configured instance, we load that instead, if we are not testing. config.py
         # can be used to store real values that we don't want to be visible, like a real SECRET_KEY.
-        app.config.from_pyfile("config.py", silent=True)
+        app.config.from_pyfile("config.py", silent=False)
     else:
         # Otherwise, we load a test configuration to make stuff easier for ourselves.
         app.config.from_mapping(test_config)
@@ -32,12 +32,13 @@ def create_app(test_config=None):
     from . import index
     from . import lab
     from . import admin
+    from . import leaderboard
 
-    db.init_app(app)
     app.register_blueprint(auth.bp)
     app.register_blueprint(index.bp)
     app.register_blueprint(lab.bp)
     app.register_blueprint(admin.bp)
+    app.register_blueprint(leaderboard.bp)
     app.add_url_rule("/", endpoint="index")
 
     return app

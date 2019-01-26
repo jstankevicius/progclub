@@ -1,69 +1,54 @@
-import sqlite3, click, os
-from flask import current_app, g
-from flask.cli import with_appcontext
-#from google.cloud import datastore
+from flask import current_app
+from google.cloud import datastore
 
-#datastore_client = datastore.Client()
-
-# Weirdest and most nondescript module name EVER:
-# g is the "global" (if that's what it stands for) cache in which all the
-# information that might be accessed by a request is stored. If we need
-# to access the database multiple times, g will be called on instead of
-# a new connection being created.
-def make_dicts(cursor, row):
-    return dict((cursor.description[idx][0], value)
-                for idx, value in enumerate(row))
+datastore_client = datastore.Client()
+builtin_list = list
 
 
-def get_db():
-    # We ensure that no database has been stored in g yet.
-    if "db" not in g:
-        g.db = sqlite3.connect(
+def from_datastore(entity):
+    """Converts a datastore entity into a dictionary format."""
+    if not entity:
+        return None
+    if isinstance(entity, builtin_list):
+        entity = entity.pop()
 
-            # Remember when we defined a databse in __init__.py? It's recalled here,
-            # and we use the path stored in the DATABASE key to retrieve the location,
-            # which, if everything executed correctly, should be the instance path
-            # of the application.
-            current_app.config["DATABASE"],
-            detect_types=sqlite3.PARSE_DECLTYPES
-        )
-
-        g.db.row_factory = make_dicts
-
-    return g.db
+    entity['id'] = entity.key.id
+    return entity
 
 
-def query_db(query, args=(), one=False):
-    cur = get_db().execute(query, args)
-    rv = cur.fetchall()
-    cur.close()
-    return (rv[0] if rv else None) if one else rv
+def get_client():
+    """Returns the application's DataStore client."""
+    return datastore.Client(current_app.config["PROJECT_ID"])
 
 
-def close_db(e=None):
-    db = g.pop("db", None)
-
-    if db is not None:
-        db.close()
-
-
-def init_db():
-    db = get_db()
-
-    with current_app.open_resource("schema.sql") as f:
-        db.executescript(f.read().decode("utf8"))
+def entry(kind, key, properties):
+    """Inserts a DataStore entity of a given kind, ID,
+    and properties into the database."""
+    ds = get_client()
+    entity = datastore.Entity(ds.key(kind, key))
+    entity.update(properties)
+    ds.put(entity)
+    return entity
 
 
-def init_app(app):
-    app.teardown_appcontext(close_db)
-    app.cli.add_command(init_db_command)
+def get_entry(kind, key):
+    ds = get_client()
+    return from_datastore(ds.get(ds.key(kind, key)))
 
 
-@click.command("initdb")
-@with_appcontext
-def init_db_command():
-    init_db()
-    click.echo("Initialized the database.")
+def update_entry(kind, key, properties):
+    ds = get_client()
+    entity = ds.get(ds.key(kind, key))
+    entity.update(properties)
+    ds.put(entity)
 
 
+def get_entries(kind, order=None):
+    ds = get_client()
+    query = ds.query(kind=kind)
 
+    if order is not None:
+        query.order = order
+
+    # We should probably implement filtering later.
+    return list(query.fetch())

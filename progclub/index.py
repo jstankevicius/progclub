@@ -1,15 +1,12 @@
 from flask import Blueprint, render_template, session
-from .db import get_db, query_db
+from . import db
 
 bp = Blueprint("index", __name__)
 
 
 @bp.route("/", methods=["GET"])
 def index():
-    db = get_db()
-
-    labs = query_db("SELECT * FROM labs ORDER BY id DESC")
-    solutions = query_db("SELECT * FROM submissions")
+    labs = db.get_entries("Lab", ["-id"])
 
     navbar = render_template("default_navbar.html")
 
@@ -20,5 +17,4 @@ def index():
 
     return render_template("index.html",
                            labs=labs,
-                           solutions=solutions,
                            navbar=navbar)

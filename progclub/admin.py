@@ -1,5 +1,5 @@
 from flask import Blueprint, redirect, render_template, request, session, url_for
-from .db import get_db
+from . import db
 import datetime
 
 
@@ -19,19 +19,16 @@ def admin_view():
         body = request.form["body"]
         output = request.form["output"]
 
-        db = get_db()
-        now = datetime.datetime.now().strftime("%I:%M:%S%p, %m-%d-%y")
-        db.execute("INSERT INTO labs (title, body, output, created) VALUES (?, ?, ?, ?)",
-                   (name, body, output, now))
-
-        db.commit()
+        now = datetime.datetime.now()
+        db.entry("Lab", int(now.strftime("%y%m%d%I%M%S")),
+                 {"name": name, "body": body, "output": output, "created": now})
 
         return redirect(url_for("index"))
 
     # oh god why
     if request.method == "GET":
-        if "user_id" in session:
-            if session["user_id"] == 1:
+        if "username" in session:
+            if session["username"] == "test_user":
                 print("Redirecting to admin page.")
                 return render_template("admin.html")
             else:

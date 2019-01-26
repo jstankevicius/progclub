@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, session
-from .db import query_db
+from . import db
 
 bp = Blueprint("leaderboard", __name__)
 
@@ -14,6 +14,6 @@ def leaderboard():
     if "user_id" in session:
         navbar = render_template("user_navbar.html", username=session["username"], points=session["points"])
 
-    users = query_db("SELECT * FROM users ORDER BY points DESC")
+    users = db.get_entries("User", ["points"])
 
     return render_template("leaderboard.html", users=users, navbar=navbar)
