@@ -1,6 +1,9 @@
 from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 from . import db
 from datetime import datetime, timezone
+from werkzeug.utils import secure_filename
+import subprocess as sub
+import os
 
 bp = Blueprint("labs", __name__, url_prefix="/labs")
 
@@ -24,8 +27,6 @@ def labview(lab_id):
 
     # Ugly
     submissions = [s for s in db.get_entries("Submission", ["submitted"]) if not (lab["name"] != s["lab_name"])]
-
-    # Ugly
     navbar = render_template("default_navbar.html")
 
     # weird fix but ok
@@ -35,7 +36,7 @@ def labview(lab_id):
     if request.method == "POST":
 
         # Check whether or not the user is logged in. If not, redirect to login page.
-        # TODO: should probably make a login_required wrapper for this
+        # TODO: make a login_required wrapper for this
         if "user_id" not in session:
             print("No user found in this session. Redirecting...")
             return redirect(url_for("auth.login"))
@@ -50,15 +51,29 @@ def labview(lab_id):
                 if solution["author_name"] == session["username"] and lab["name"] == solution["lab_name"]:
                     already_submitted = True
 
+            # TODO: break down the block below into functions
             # If this is a brand new attempt, continue.
             if not already_submitted:
 
                 # Retrieve current datetime as a string.
                 now = datetime.now(timezone.utc)
                 created = lab["created"]
-                output = request.form["output"]
-                correct_output = lab["output"]
 
+                file_upload = request.files["file_upload"]
+                correct_output = lab["output"]
+                filename = secure_filename(file_upload.filename)
+
+                # save file
+                file_upload.save("progclub/jail/" + filename)
+
+                # execute program
+                # TODO: IMPLEMENT SAFETY
+                output = sub.check_output("python progclub/jail/" + filename, shell=True).decode("utf-8").strip()
+
+                # remove program
+                os.remove("progclub/jail/" + filename)
+
+                # okay, the goal is to get this to be more complicated than
                 if output == correct_output:
 
                     # If the answer is correct, score the submission.
@@ -71,12 +86,21 @@ def labview(lab_id):
                     username = session["username"]
 
                     # Queries to update points, submissions for the lab, and the number of solutions by the user and for the lab.
-                    db.update_entry("User", username, {"points": session["points"], "numsolutions": session["numsolutions"]})
-                    db.update_entry("Lab", lab_id, {"numsolutions": lab["numsolutions"] + 1})
-                    db.entry("Submission", username + str(lab_id), {"lab_name": lab["name"], "author_name": session["username"], "submitted": now})
+                    db.update_entry("User", username,
+                                    {"points": session["points"],
+                                     "numsolutions": session["numsolutions"]})
 
+                    db.update_entry("Lab", lab_id,
+                                    {"numsolutions": lab["numsolutions"] + 1})
+
+                    db.entry("Submission", username + str(lab_id),
+                             {"lab_name": lab["name"],
+                              "author_name": session["username"],
+                              "submitted": now})
+                
                 else:
                     flash("Incorrect output.")
+
             else:
                 flash("You've already submitted a solution for this lab!")
 

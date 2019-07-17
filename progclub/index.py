@@ -3,7 +3,6 @@ from . import db
 
 bp = Blueprint("index", __name__)
 
-
 @bp.route("/", methods=["GET"])
 def index():
     labs = db.get_entries("Lab", ["-id"])

@@ -37,10 +37,12 @@
 			margin-left: 30px;
 		}
 
-		.output {
+		.file_upload {
 			border-radius: 4px;
 			padding: 12px;
 			width: 300px;
+			margin-top: 15px;
+			margin-left: 60px;
 			font-family: monospace;
 			font-size: 16px;
 			display: inline-block;
@@ -67,18 +69,20 @@
 			margin-top: -30px;
 			margin-bottom: 10px;
 		}
+
 		.uploaddiv {
 			margin-top: 20px;
+			border: solid;
+			border-width: 1px;
+			border-radius: 10px;
 		}
 
 		</style>
-
 	</head>
 
 	<div class="navbar">
 		{{ navbar|safe }}
 	</div>
-
 
 	<div class="wrapper">
 
@@ -101,8 +105,8 @@
 				<form method=post enctype="multipart/form-data">
 
 					<div class="container">
-						<input type="text", class="output", name="output" placeholder="Output">
-						<input type="submit" value="Submit" class="uploadbutton">
+						<input type="file", class="file_upload", name="file_upload">
+						<input type="submit" value="Upload" class="uploadbutton">
 					</div>
 
 				</form>

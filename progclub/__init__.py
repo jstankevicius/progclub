@@ -10,7 +10,7 @@ def create_app(test_config=None):
 
     # SECRET_KEY is set to a convenient value for testing. This should be changed once we actually deploy.
     # DATABASE is the path of our SQLite (or other) database.
-    app.config.from_mapping(SECRET_KEY="dev", DATABASE=os.path.join(app.instance_path, "app.sqlite"))
+    app.config.from_mapping(SECRET_KEY="dev")
 
     if test_config is None:
         # If there is a configured instance, we load that instead, if we are not testing. config.py

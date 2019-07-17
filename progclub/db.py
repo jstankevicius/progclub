@@ -2,14 +2,13 @@ from flask import current_app
 from google.cloud import datastore
 
 datastore_client = datastore.Client()
-builtin_list = list
 
 
 def from_datastore(entity):
     """Converts a datastore entity into a dictionary format."""
     if not entity:
         return None
-    if isinstance(entity, builtin_list):
+    if isinstance(entity, list):
         entity = entity.pop()
 
     entity['id'] = entity.key.id
